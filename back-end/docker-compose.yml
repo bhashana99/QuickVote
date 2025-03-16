@@ -1,15 +1,23 @@
-mysql:
-  container_name: ms_mysql
-  image: mysql:latest
-  environment:
-    MYSQL_ROOT_PASSWORD: 123123
-    MYSQL_DATABASE: quickvote
-    MYSQL_USER: bhashana99
-    MYSQL_PASSWORD: bhashana99
-  volumes:
-    - mysql:/var/lib/mysql
-  ports:
-    - "3306:3306"
-  networks:
-    - microservices-net
-  restart: unless-stopped
+services:
+  mysql:
+    container_name: ms_mysql
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: 123123
+      MYSQL_DATABASE: quickvote
+      MYSQL_USER: bhashana99
+      MYSQL_PASSWORD: bhashana99
+    volumes:
+      - mysql:/var/lib/mysql
+    ports:
+    - "3307:3306"
+    networks:
+      - microservices-net
+    restart: unless-stopped
+
+networks:
+  microservices-net:
+    driver: bridge
+
+volumes:
+  mysql:
