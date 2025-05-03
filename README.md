@@ -1,75 +1,53 @@
-# 🗳️ QuickVote (Work in Progress)
+## 🧱 Planned Microservices Architecture
 
-QuickVote is an online voting platform I'm building to make creating and managing elections easier and more flexible. The main idea is to let users sign up, create their own elections, and define how people can register to vote using custom forms. Once voters are approved by the election creator, they can cast their vote—only once!—and get notified by email when the results are out.
+QuickVote is being developed with a microservices architecture using Spring Boot and MySQL. I'm also integrating **Spring Cloud Config Server** and **Eureka Discovery Server** to support scalable and maintainable service communication.
 
-This project is still under active development, and things are evolving as I go.
+### 🔌 Core Services
 
----
+- **Config Server**  
+  Centralized configuration for all microservices. Helps keep environment-specific settings in one place.
 
-## 🔍 What I'm Building
+- **Discovery Server (Eureka)**  
+  Registers all services for dynamic discovery. Makes inter-service communication more flexible and avoids hardcoding service URLs.
 
-- A user system with email verification
-- The ability for users to create elections
-- Shareable registration links with custom forms for each election
-- A review process to approve or reject voter applications
-- One vote per user per election
-- Real-time stats for each election (like how many voted, how many still pending)
-- Email notifications for approvals, voting confirmations, and results
+- **API Gateway**  
+  Routes client requests to appropriate backend services. Will also handle basic request filtering and security.
 
----
+### 🧩 Planned Business Services
 
-## 🏗️ Planned Entities and Relationships
+- **Auth Service**  
+  Handles user registration, login, and email verification. Will be integrated with Keycloak for advanced auth.
 
-### User
-Users can be admins (who create elections) or voters (who apply and vote).  
-Each user has:
-- Username, email, password
-- Role (admin or voter)
-- Email verification status
+- **User Service**  
+  Manages user roles, status, and profile details.
 
-### Election
-Created by a user (admin), each election has:
-- Title, description, start/end time
-- A custom form for voters to fill before voting
-- A shareable link for voter registration
+- **Election Service**  
+  Creates and manages elections, time ranges, and custom voter forms.
 
-### Candidate
-Each election can have multiple candidates, added by the creator.
+- **Candidate Service**  
+  Manages candidates within an election.
 
-### Voter Application
-When someone wants to vote, they fill out a form (custom per election).  
-The election creator reviews the application and approves or rejects it.
+- **Voter Application Service**  
+  Accepts and stores form submissions from prospective voters. Allows admins to approve or reject requests.
 
-### Vote
-Only approved voters can vote, and they can vote **only once** per election.
+- **Voting Service**  
+  Lets approved users vote (only once per election). Handles vote storage and validation.
 
-### Notifications
-Emails are sent for:
-- Application approval
-- Vote confirmation
-- Final results
+- **Notification Service**  
+  Sends approval emails, voting confirmations, and election results.
+
+- **Result Service**  
+  Tallies votes after the election ends and triggers result emails to voters.
 
 ---
 
-## 🔄 How Everything Connects
+## ⚙️ Tech Stack (So Far)
 
-- A **user** registers → verifies their email
-- A **verified user** creates an **election**
-- That user adds **candidates** and defines a custom **form** for voter registration
-- A **voter** fills the form via the **shareable link**
-- The election creator reviews and **approves/rejects** the application
-- If approved, the voter can **cast one vote**
-- After the election ends, **results are emailed** to voters
-
----
-
-## 🚧 Status
-
-Right now, I’m still working on:
-- Backend logic and API setup (Spring Boot)
-- Database schema (MySQL)
-- Authentication and authorization (Keycloak)
-- Frontend (Angular + Tailwind CSS)
-
-More updates coming soon!
-
+- Spring Boot (for all microservices)
+- Spring Cloud Config
+- Eureka Discovery Server
+- Angular (Frontend)
+- Tailwind CSS (Styling)
+- MySQL (Database)
+- Keycloak (Authentication)
+- Docker (planned for containerization)
