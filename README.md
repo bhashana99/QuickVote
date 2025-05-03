@@ -1,147 +1,75 @@
-# 🗳️ QuickVote – Online Voting Platform
+# 🗳️ QuickVote (Work in Progress)
 
-QuickVote is a secure, flexible, and user-friendly online voting system designed to enable users to create customizable elections with dynamic voter registration and approval workflows. It supports email notifications, real-time election statistics, and post-election result delivery.
+QuickVote is an online voting platform I'm building to make creating and managing elections easier and more flexible. The main idea is to let users sign up, create their own elections, and define how people can register to vote using custom forms. Once voters are approved by the election creator, they can cast their vote—only once!—and get notified by email when the results are out.
 
----
-
-## 📘 System Overview
-
-QuickVote allows any registered and verified user to create elections and define custom forms for voter registration. Voters apply to participate through a shareable election link, and only approved applicants are permitted to vote. The system enforces strict one-vote-per-election rules and keeps all users informed through email notifications. Results are automatically emailed to voters after the election ends.
+This project is still under active development, and things are evolving as I go.
 
 ---
 
-## 🏗️ Entity-Relationship Model
+## 🔍 What I'm Building
 
-### 1. **User**
-Represents a registered platform user (Admin or Voter).
-
-- `user_id`: Primary Key
-- `username`: Display name
-- `email`: Verified email address
-- `password_hash`: Hashed password
-- `email_verified`: Boolean flag
-- `role`: 'Admin' or 'Voter'
-- `created_at`: Timestamp
-- `status`: 'Active' or 'Suspended'
+- A user system with email verification
+- The ability for users to create elections
+- Shareable registration links with custom forms for each election
+- A review process to approve or reject voter applications
+- One vote per user per election
+- Real-time stats for each election (like how many voted, how many still pending)
+- Email notifications for approvals, voting confirmations, and results
 
 ---
 
-### 2. **Election**
-Created by a user and contains metadata, voting period, and a custom voter form.
+## 🏗️ Planned Entities and Relationships
 
-- `election_id`: Primary Key
-- `title`: Election title
-- `description`: Description
-- `created_by`: FK → User.user_id
-- `start_time`: Start datetime
-- `end_time`: End datetime
-- `voter_form_schema`: JSON schema for custom voter form
-- `shareable_link`: Unique URL for voter applications
-- `created_at`: Timestamp
-- `status`: 'Draft', 'Ongoing', 'Completed'
+### User
+Users can be admins (who create elections) or voters (who apply and vote).  
+Each user has:
+- Username, email, password
+- Role (admin or voter)
+- Email verification status
 
----
+### Election
+Created by a user (admin), each election has:
+- Title, description, start/end time
+- A custom form for voters to fill before voting
+- A shareable link for voter registration
 
-### 3. **Candidate**
-Represents a candidate in a specific election.
+### Candidate
+Each election can have multiple candidates, added by the creator.
 
-- `candidate_id`: Primary Key
-- `election_id`: FK → Election.election_id
-- `name`: Candidate's name
-- `description`: Information about the candidate
-- `registered_at`: Timestamp
+### Voter Application
+When someone wants to vote, they fill out a form (custom per election).  
+The election creator reviews the application and approves or rejects it.
 
----
+### Vote
+Only approved voters can vote, and they can vote **only once** per election.
 
-### 4. **VoterApplication**
-Submitted by users (via shareable link) to request participation in an election.
-
-- `application_id`: Primary Key
-- `election_id`: FK → Election.election_id
-- `applicant_email`: Email of the applicant
-- `form_data`: JSON or text data from dynamic form
-- `status`: 'Pending', 'Approved', 'Rejected'
-- `decision_by`: FK → User.user_id (admin reviewer)
-- `applied_at`: Timestamp
-- `decision_at`: Timestamp
-- `notification_sent`: Boolean
+### Notifications
+Emails are sent for:
+- Application approval
+- Vote confirmation
+- Final results
 
 ---
 
-### 5. **Vote**
-Stores a single vote cast by an approved voter.
+## 🔄 How Everything Connects
 
-- `vote_id`: Primary Key
-- `election_id`: FK → Election.election_id
-- `voter_email`: Email address of voter
-- `candidate_id`: FK → Candidate.candidate_id
-- `voted_at`: Timestamp
-
-*Constraint: One vote per voter per election.*
-
----
-
-### 6. **ElectionStats** *(Optional View or Computed Table)*
-Summarizes key voting metrics in real-time.
-
-- `election_id`: FK → Election.election_id
-- `total_candidates`: Number of candidates
-- `total_voters_approved`: Approved voters
-- `total_votes_cast`: Votes already cast
-- `total_pending_voters`: Applications still pending
+- A **user** registers → verifies their email
+- A **verified user** creates an **election**
+- That user adds **candidates** and defines a custom **form** for voter registration
+- A **voter** fills the form via the **shareable link**
+- The election creator reviews and **approves/rejects** the application
+- If approved, the voter can **cast one vote**
+- After the election ends, **results are emailed** to voters
 
 ---
 
-### 7. **Notification**
-Tracks all system email notifications.
+## 🚧 Status
 
-- `notification_id`: Primary Key
-- `recipient_email`: Target email
-- `subject`: Email subject
-- `content`: Email body
-- `type`: 'Approval', 'VoteConfirmation', 'Result'
-- `sent_at`: Timestamp
-- `status`: 'Sent' or 'Failed'
+Right now, I’m still working on:
+- Backend logic and API setup (Spring Boot)
+- Database schema (MySQL)
+- Authentication and authorization (Keycloak)
+- Frontend (Angular + Tailwind CSS)
 
----
-
-### 8. **ElectionResultEmail**
-Logs which voters have received results after election ends.
-
-- `result_id`: Primary Key
-- `election_id`: FK → Election.election_id
-- `voter_email`: Voter’s email
-- `sent_at`: Timestamp
-
----
-
-## 🔄 Summary of Relationships
-
-- A **User** can act as an **Admin** (who creates elections and approves voters) or as a **Voter** (who applies and votes).
-
-- A **verified User** can create one or more **Elections**.
-
-- An **Election** belongs to one **User** and contains multiple **Candidates**.
-
-- A **VoterApplication** is submitted per **Election** and reviewed by the election creator.
-
-- Only **approved applications** can result in a **Vote**, which is restricted to one per election per voter email.
-
-- The voting interface shows **real-time stats**, including total candidates, votes cast, pending applications, and remaining voters.
-
-- After the election ends, the system automatically sends **results via email** to each approved voter.
-
----
-
-## ✅ Key Features
-
-- Email-verified user registration
-- Custom election creation with dynamic voter forms
-- Shareable voter registration link
-- Admin review and approval of voter applications
-- Real-time voting statistics
-- Secure one-vote-per-election enforcement
-- Email notifications for approvals, voting, and results
-
----
+More updates coming soon!
 
